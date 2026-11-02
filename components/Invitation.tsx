@@ -5,7 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Lang } from "@/data/invitation";
 import { Background, Petals, burstPetals } from "./Atmosphere";
 import Cover from "./Cover";
-import { IconMusicOff, SvgDefs } from "./ornaments";
+import { SvgDefs } from "./ornaments";
+import { ScrollProgress, TourDock, useAutoTour } from "./AutoTour";
 import { Countdown, Couple, Footer, Hero, Rsvp, SaveTheDate, Timeline, Valima, Venue } from "./Sections";
 
 const VOLUME = 0.7;
@@ -16,6 +17,15 @@ export default function Invitation() {
   const [lang, setLang] = useState<Lang>("en");
   const [playing, setPlaying] = useState(false);
   const audio = useRef<HTMLAudioElement>(null);
+  const tour = useAutoTour();
+  const startTour = tour.start;
+
+  // start the auto-scroll a moment after the doors have opened
+  useEffect(() => {
+    if (!coverGone) return;
+    const t = window.setTimeout(startTour, 1400);
+    return () => window.clearTimeout(t);
+  }, [coverGone, startTour]);
 
   useEffect(() => {
     document.body.classList.toggle("locked", !coverGone);
@@ -58,10 +68,10 @@ export default function Invitation() {
     } else play();
   };
 
-  const onOpen = () => {
+  const onOpen = (byTap: boolean) => {
     window.scrollTo(0, 0);
     setOpened(true);
-    play();
+    if (byTap) play();
     window.setTimeout(() => burstPetals(80), 650);
   };
 
@@ -92,10 +102,12 @@ export default function Invitation() {
       <AnimatePresence>
         {coverGone && (
           <>
+            <ScrollProgress key="progress" />
             <motion.div
               key="lang"
+              data-tour-ignore
               className="fab"
-              style={{ top: 14, right: 14, padding: 4, display: "flex", gap: 2 }}
+              style={{ top: 12, right: 12, padding: 4, display: "flex", gap: 2 }}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
             >
@@ -120,26 +132,17 @@ export default function Invitation() {
                 </button>
               ))}
             </motion.div>
-            <motion.button
-              key="music"
-              className="fab"
-              style={{ right: 16, bottom: 18, width: 52, height: 52 }}
-              onClick={toggleMusic}
-              aria-label={playing ? "Pause music" : "Play music"}
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
-              {playing ? (
-                <span className="eq flex h-5 items-end gap-[3px]">
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                </span>
-              ) : (
-                <IconMusicOff s={22} />
-              )}
-            </motion.button>
+            <TourDock
+              key="dock"
+              lang={lang}
+              mode={tour.mode}
+              resumeP={tour.resumeP}
+              index={tour.index}
+              onToggle={tour.toggle}
+              onJump={tour.jumpTo}
+              musicOn={playing}
+              onMusic={toggleMusic}
+            />
           </>
         )}
       </AnimatePresence>

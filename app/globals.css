@@ -34,6 +34,7 @@ body {
   font-weight: 500;
   font-variant-numeric: lining-nums;
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body.locked {
@@ -86,6 +87,8 @@ body.locked {
 
 /* ───────── Layout ───────── */
 .column {
+  overflow-x: hidden;
+  overflow-x: clip; /* decorative flowers must never widen the page on phones */
   position: relative;
   z-index: 2;
   width: 100%;

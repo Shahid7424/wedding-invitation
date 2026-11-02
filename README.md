@@ -40,6 +40,15 @@ npm run build    # production build check
 | Dulha-dulhan illustration aur unke rang | `components/CoupleIllustration.tsx` (`PALETTES`) |
 | Cover (darwaze + Tap to Open) | `components/Cover.tsx` |
 
+## Auto-scroll (khud chalne wala page)
+
+- Darwaze khulne ke ~1.5 sec baad page section-by-section khud chalta hai (lambe sections dheere-dheere padhne ki speed se).
+- Screen chhoote hi ruk jaata hai; mehmaan jahan chahe scroll karke padh sakta hai. Chhodne ke 4 sec baad wahin se phir chal padta hai (`RESUME_MS` in `components/AutoTour.tsx`).
+- Neeche dock: **Pause / Auto Play / Replay**, **Sections** (kisi bhi hissa par seedha jump), aur music button.
+- Valima tak pahunchne par agar kisi ne scratch nahi kiya to card khud scratch ho kar date dikha deta hai.
+- Cover par koi tap na kare to 12 sec baad invitation khud khul jaata hai (`AUTO_OPEN_AFTER` in `components/Cover.tsx`). Music sirf tap se chalta hai.
+- Har section ka rukne ka time `components/Sections.tsx` mein `data-dwell` (milliseconds) se badal sakte hain.
+
 ## Notes
 
 - Site Google search mein index nahi hogi (`robots: noindex`) — sirf link wale log dekh payenge.

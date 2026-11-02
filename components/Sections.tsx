@@ -29,7 +29,7 @@ const nameSize = "clamp(36px, 11vw, 50px)";
 export function Hero({ lang }: { lang: Lang }) {
   const en = lang === "en";
   return (
-    <section className="section" style={{ paddingTop: 34 }}>
+    <section className="section" data-tour="hero" style={{ paddingTop: 34 }}>
       <FloralCluster className="pointer-events-none absolute -left-10 -top-2" size={150} />
 
       <div className="relative text-center">
@@ -131,7 +131,7 @@ export function Couple({ lang, index }: { lang: Lang; index: 0 | 1 }) {
   const w = D.weddings[index];
   const en = lang === "en";
   return (
-    <section className="section" id={w.id}>
+    <section className="section" id={w.id} data-tour={w.id}>
       <div className="text-center">
         <Reveal>
           <span className="pill">
@@ -274,7 +274,7 @@ export function SaveTheDate({ lang }: { lang: Lang }) {
     { d: 12, label: en ? D.valima.en.title : D.valima.ur.title },
   ];
   return (
-    <section className="section text-center">
+    <section className="section text-center" data-tour="calendar" data-dwell="6500">
       <Reveal>
         <h2 className="script gold-text" style={{ fontSize: 56 }}>
           Save the Date
@@ -375,7 +375,7 @@ export function Valima({ lang }: { lang: Lang }) {
   const en = lang === "en";
   const [shown, setShown] = useState(false);
   return (
-    <section className="section text-center">
+    <section className="section text-center" data-tour="valima" data-dwell="7500">
       <Reveal>
         <span className={en ? "pill-fill" : "pill-fill ur"} style={{ fontSize: en ? 15 : 18, letterSpacing: en ? undefined : 0 }}>
           {en ? D.valima.en.label.toUpperCase() : D.valima.ur.label}
@@ -518,7 +518,7 @@ export function Countdown({ lang }: { lang: Lang }) {
   const en = lang === "en";
   const labels = en ? ["Days", "Hours", "Minutes", "Seconds"] : ["دن", "گھنٹے", "منٹ", "سیکنڈ"];
   return (
-    <section className="section text-center">
+    <section className="section text-center" data-tour="countdown" data-dwell="4200">
       <Reveal>
         <h2 className="script gold-text" style={{ fontSize: 46 }}>
           Counting down to
@@ -563,7 +563,7 @@ export function Timeline({ lang }: { lang: Lang }) {
     },
   ];
   return (
-    <section className="section">
+    <section className="section" data-tour="timeline" data-dwell="6500">
       <Reveal className="text-center">
         <h2 className="script gold-text" style={{ fontSize: 50 }}>
           Celebrations
@@ -657,7 +657,7 @@ function MapArt() {
 export function Venue({ lang }: { lang: Lang }) {
   const en = lang === "en";
   return (
-    <section className="section">
+    <section className="section" data-tour="venue" data-dwell="6000">
       <ArchCard>
         <Reveal>
           {en ? (
@@ -719,7 +719,7 @@ export function Rsvp({ lang }: { lang: Lang }) {
   const en = lang === "en";
   const names = en ? D.rsvp.en.names : D.rsvp.ur.names;
   return (
-    <section className="section text-center">
+    <section className="section text-center" data-tour="rsvp" data-dwell="6500">
       <Reveal>
         <h2 className="caps gold-text" style={{ fontSize: 36, fontWeight: 700, letterSpacing: ".22em" }}>
           {D.rsvp.en.label}
@@ -789,7 +789,7 @@ export function Footer({ lang }: { lang: Lang }) {
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
   return (
-    <footer className="section relative pb-28 text-center">
+    <footer className="section relative pb-28 text-center" data-tour="footer" data-dwell="5000">
       <FloralCluster className="pointer-events-none absolute -left-8 top-6" size={110} />
       <FloralCluster className="pointer-events-none absolute -right-8 top-6" size={110} flip />
       <div className="flex justify-center">

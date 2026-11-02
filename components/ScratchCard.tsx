@@ -24,6 +24,7 @@ export default function ScratchCard({
   const [revealed, setRevealed] = useState(false);
   const [touched, setTouched] = useState(false);
   const onRevealRef = useRef(onReveal);
+  const touchedRef = useRef(false);
   useEffect(() => {
     onRevealRef.current = onReveal;
   });
@@ -121,6 +122,7 @@ export default function ScratchCard({
     const down = (e: PointerEvent) => {
       drawing = true;
       last = null;
+      touchedRef.current = true;
       setTouched(true);
       c.setPointerCapture(e.pointerId);
       scratch(pos(e));
@@ -131,11 +133,61 @@ export default function ScratchCard({
       last = null;
       check();
     };
+    // Auto-tour: when the tour arrives here and nobody has scratched yet, scratch it by itself
+    let autoRaf = 0;
+    const onArrive = (e: Event) => {
+      if ((e as CustomEvent).detail !== "valima" || done || touchedRef.current) return;
+      touchedRef.current = true;
+      setTouched(true);
+      const rows = 7;
+      const t0 = performance.now();
+      const dur = 1900;
+      const at = (k: number) => {
+        const f = k * rows;
+        const row = Math.min(rows - 1, Math.floor(f));
+        const u = f - row;
+        const x = row % 2 ? width - 20 - u * (width - 40) : 20 + u * (width - 40);
+        const y = 28 + (row + u) * ((height - 56) / rows);
+        return { x, y };
+      };
+      last = at(0);
+      const step = (now: number) => {
+        const k = Math.min(1, (now - t0) / dur);
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.strokeStyle = "#000";
+        ctx.globalAlpha = 1;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.lineWidth = 64;
+        const p = at(k);
+        ctx.beginPath();
+        ctx.moveTo(last!.x, last!.y);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+        last = p;
+        if (k < 1) autoRaf = requestAnimationFrame(step);
+        else {
+          last = null;
+          check();
+          if (!done) {
+            done = true;
+            setRevealed(true);
+            burstPetals(90, 0.1);
+            onRevealRef.current?.();
+          }
+        }
+      };
+      window.setTimeout(() => (autoRaf = requestAnimationFrame(step)), 700);
+    };
+    window.addEventListener("tour:arrive", onArrive);
+
     c.addEventListener("pointerdown", down);
     c.addEventListener("pointermove", move);
     c.addEventListener("pointerup", up);
     c.addEventListener("pointercancel", up);
     return () => {
+      cancelAnimationFrame(autoRaf);
+      window.removeEventListener("tour:arrive", onArrive);
       c.removeEventListener("pointerdown", down);
       c.removeEventListener("pointermove", move);
       c.removeEventListener("pointerup", up);
